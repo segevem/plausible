@@ -880,7 +880,7 @@ private def enumSchedulesChunked {α v} [BEq v] [Hashable v] (vars : List v) (ma
       env := out_vars ++ env
 
       let (postchecks,to_be_satisfied') := List.partition (needs_checking env) to_be_satisfied
-      sched := sched ++ prune_empties [.InstVars bound_vars
+      sched := sched ++ prune_empties [.InstVars (List.eraseDups bound_vars)
                                 , .Checks (Prod.fst <$> prechecks)
                                 , .Produce out_vars hyp
                                 , .Checks (Prod.fst <$> postchecks)
@@ -981,7 +981,7 @@ private def processChoice {α v} [BEq v] [Hashable v] (hyp : α)
   let finalEnvSet := out_vars.foldl (fun s v => s.insert v) newEnvSet
   let finalEnv := out_vars ++ newEnv
   let (postchecks, to_be_satisfied') := List.partition (needs_checking finalEnv) to_be_satisfied
-  let newSched := prune_empties [.InstVars bound_vars
+  let newSched := prune_empties [.InstVars (List.eraseDups bound_vars)
                                 , .Checks (Prod.fst <$> prechecks)
                                 , .Produce out_vars hyp
                                 , .Checks (Prod.fst <$> postchecks)]
